@@ -26,4 +26,18 @@ public class ServiceTest {
         assertThat(result.body(), is("Hello World"));
         service.stop();
     }
+
+    @Test
+    public void validatePostMethod() throws InterruptedException, IOException {
+        Service service = Service.ignite();
+        service.post("/submit", (req, res) -> "Data Submitted");
+        service.awaitInitialization();
+
+        HttpTestClient client = HttpTestClient.from(service);
+        HttpResponse<String> result = client.send("/submit", newBuilder().POST());
+
+        assertThat(result.statusCode(), is(200));
+        assertThat(result.body(), is("Data Submitted"));
+        service.stop();
+    }
 }

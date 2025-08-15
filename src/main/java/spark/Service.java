@@ -402,6 +402,8 @@ public class Service extends Routable {
         init();
         if (httpMethod == HttpMethod.get) {
             this.javalin.get(route.path(), route);
+        } else if (httpMethod == HttpMethod.post) {
+            this.javalin.post(route.path(), route);
         } else {
             throw new NotImplementedException();
         }
