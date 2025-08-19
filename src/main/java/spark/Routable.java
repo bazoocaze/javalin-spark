@@ -47,7 +47,7 @@ public abstract class Routable {
      * @param route The route
      */
     public void post(String path, Route route) {
-        throw new NotImplementedException();
+        this.addRoute(HttpMethod.post, new RouteImpl(route, path));
     }
 
     /**

@@ -10,11 +10,6 @@ public class Request {
 
     private final Context ctx;
 
-    protected Request() {
-        // Used by wrapper
-        this.ctx = null;
-    }
-
     public Request(Context ctx) {
         this.ctx = ctx;
     }
@@ -25,7 +20,7 @@ public class Request {
      * @return a map containing all route params
      */
     public Map<String, String> params() {
-        throw new NotImplementedException();
+        return this.ctx.pathParamMap();
     }
 
     /**
@@ -36,7 +31,8 @@ public class Request {
      * @return null if the given param is null or not found
      */
     public String params(String param) {
-        throw new NotImplementedException();
+        String paramKey = param.startsWith(":") ? param.substring(1) : param;
+        return this.ctx.pathParam(paramKey);
     }
 
     /**
@@ -50,35 +46,35 @@ public class Request {
      * @return request method e.g. GET, POST, PUT, ...
      */
     public String requestMethod() {
-        throw new NotImplementedException();
+        return this.ctx.method().name().toUpperCase();
     }
 
     /**
      * @return the scheme
      */
     public String scheme() {
-        throw new NotImplementedException();
+        return this.ctx.scheme();
     }
 
     /**
      * @return the host
      */
     public String host() {
-        throw new NotImplementedException();
+        return this.ctx.host();
     }
 
     /**
      * @return the user-agent
      */
     public String userAgent() {
-        throw new NotImplementedException();
+        return this.ctx.userAgent();
     }
 
     /**
      * @return the server port
      */
     public int port() {
-        throw new NotImplementedException();
+        return this.ctx.port();
     }
 
 
@@ -87,7 +83,7 @@ public class Request {
      * Example return: "/example/foo"
      */
     public String pathInfo() {
-        throw new NotImplementedException();
+        return this.ctx.path();
     }
 
     /**
@@ -95,7 +91,7 @@ public class Request {
      * Example return: "/account/:accountId"
      */
     public String matchedPath() {
-        throw new NotImplementedException();
+        return this.ctx.matchedPath();
     }
 
     /**
@@ -109,46 +105,46 @@ public class Request {
      * @return the context path
      */
     public String contextPath() {
-        throw new NotImplementedException();
+        return this.ctx.contextPath();
     }
 
     /**
      * @return the URL string
      */
     public String url() {
-        throw new NotImplementedException();
+        return this.ctx.fullUrl();
     }
 
     /**
      * @return the content type of the body
      */
     public String contentType() {
-        throw new NotImplementedException();
+        return this.ctx.contentType();
     }
 
     /**
      * @return the client's IP address
      */
     public String ip() {
-        throw new NotImplementedException();
+        return this.ctx.ip();
     }
 
     /**
      * @return the request body sent by the client
      */
     public String body() {
-        throw new NotImplementedException();
+        return this.ctx.body();
     }
 
     public byte[] bodyAsBytes() {
-        throw new NotImplementedException();
+        return this.ctx.bodyAsBytes();
     }
 
     /**
      * @return the length of request.body
      */
     public int contentLength() {
-        throw new NotImplementedException();
+        return this.ctx.contentLength();
     }
 
     /**
@@ -159,10 +155,8 @@ public class Request {
      * Example: query parameter 'id' from the following request URI: /hello?id=foo
      */
     public String queryParams(String queryParam) {
-        throw new NotImplementedException();
+        return this.ctx.queryParam(queryParam);
     }
-
-    //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
 
     /**
      * Gets the query param and encode it
@@ -184,7 +178,8 @@ public class Request {
      * Example: query parameter 'id' from the following request URI: /hello?id=foo
      */
     public String queryParamOrDefault(String queryParam, String defaultValue) {
-        throw new NotImplementedException();
+        String value = this.ctx.queryParam(queryParam);
+        return value == null ? defaultValue : value;
     }
 
     /**
@@ -195,7 +190,7 @@ public class Request {
      * @return the values of the provided queryParam, null if it doesn't exists
      */
     public String[] queryParamsValues(String queryParam) {
-        throw new NotImplementedException();
+        return ctx.queryParams(queryParam).toArray(new String[0]);
     }
 
     /**
@@ -205,28 +200,28 @@ public class Request {
      * @return the value of the provided header
      */
     public String headers(String header) {
-        throw new NotImplementedException();
+        return this.ctx.header(header);
     }
 
     /**
      * @return all query parameters
      */
     public Set<String> queryParams() {
-        throw new NotImplementedException();
+        return this.ctx.queryParamMap().keySet();
     }
 
     /**
      * @return all headers
      */
     public Set<String> headers() {
-        throw new NotImplementedException();
+        return this.ctx.headerMap().keySet();
     }
 
     /**
      * @return the query string
      */
     public String queryString() {
-        throw new NotImplementedException();
+        return ctx.queryString();
     }
 
     /**
@@ -236,7 +231,7 @@ public class Request {
      * @param value     The attribute value
      */
     public void attribute(String attribute, Object value) {
-        throw new NotImplementedException();
+        ctx.attribute(attribute, value);
     }
 
     /**
@@ -248,7 +243,7 @@ public class Request {
      */
     @SuppressWarnings("unchecked")
     public <T> T attribute(String attribute) {
-        throw new NotImplementedException();
+        return ctx.attribute(attribute);
     }
 
 
@@ -256,7 +251,7 @@ public class Request {
      * @return all attributes
      */
     public Set<String> attributes() {
-        throw new NotImplementedException();
+        return ctx.attributeMap().keySet();
     }
 
     /**
@@ -264,14 +259,14 @@ public class Request {
      */
     public Object raw() {
         // return HttpServletRequest
-        throw new NotImplementedException();
+        return this.ctx;
     }
 
     /**
      * @return the query map
      */
     public QueryParamsMap queryMap() {
-        throw new NotImplementedException();
+        return new QueryParamsMap(this.ctx.queryParamMap());
     }
 
     /**
@@ -309,7 +304,7 @@ public class Request {
      * @return request cookies (or empty Map if cookies aren't present)
      */
     public Map<String, String> cookies() {
-        throw new NotImplementedException();
+        return this.ctx.cookieMap();
     }
 
     /**
@@ -319,21 +314,21 @@ public class Request {
      * @return cookie value or null if the cookie was not found
      */
     public String cookie(String name) {
-        throw new NotImplementedException();
+        return this.ctx.cookie(name);
     }
 
     /**
      * @return the part of this request's URL from the protocol name up to the query string in the first line of the HTTP request.
      */
     public String uri() {
-        throw new NotImplementedException();
+        return ctx.url();
     }
 
     /**
      * @return Returns the name and version of the protocol the request uses
      */
     public String protocol() {
-        throw new NotImplementedException();
+        return this.ctx.protocol();
     }
 
     /**

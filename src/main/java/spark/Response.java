@@ -20,7 +20,7 @@ public class Response {
      * @param statusCode the status code
      */
     public void status(int statusCode) {
-        throw new NotImplementedException();
+        this.ctx.status(statusCode);
     }
 
     /**
@@ -102,7 +102,7 @@ public class Response {
      * @param value  the value
      */
     public void header(String header, String value) {
-        throw new NotImplementedException();
+        this.ctx.header(header, value);
     }
 
     /**

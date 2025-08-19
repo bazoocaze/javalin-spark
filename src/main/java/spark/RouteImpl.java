@@ -14,7 +14,7 @@ public class RouteImpl implements Handler {
     }
 
     public String path() {
-        return path;
+        return path.replaceAll(":(\\w+)", "{$1}");
     }
 
     @Override
